@@ -4,7 +4,7 @@ import { red } from 'kleur/colors';
 import * as fs from 'fs-extra';
 import * as postcss from 'postcss';
 import * as postcssImport from 'postcss-import';
-import * as cssnano from 'cssnano';
+import cssnano = require('cssnano');
 import { batchedRead, md5, TransformCache } from '../../common/transform-cache';
 import { log } from '../../common/logging';
 import { dirname, join } from 'path';

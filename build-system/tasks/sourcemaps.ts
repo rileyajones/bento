@@ -3,17 +3,16 @@ import { basename, dirname, join, posix } from 'path';
 import * as remapping from '@ampproject/remapping';
 import type { SourceMapInput, SourceMapLoader } from '@ampproject/remapping';
 import { VERSION } from '../compile/internal-version';
-import * as minimist from 'minimist';
-const argv = minimist(process.argv.slice(2));
+import { argv } from "../common/argv";
 
-export function massageSourcemaps(sourcemaps: SourceMapInput | SourceMapInput[], babelMaps: Map<string, any>, options: BuildOptions): string {
+export function massageSourcemaps(sourcemaps: SourceMapInput | SourceMapInput[], babelMaps: Map<string, remapping.DecodedSourceMap>, options: BuildOptions): string {
   /**
    * Something about the typing of this module really freaks out TypeScript.
    * Importing via `import remapping from '@ampproject/remapping'` results in remampping being undefined.
    * However, importing via `import * as remapping from '@ampproject/remapping'` results in TypeScript thinking
    * that remapping is an object with a `default` property. However, it is actually a function.
    */ 
-  const remap: typeof remapping.default = remapping as any;
+  const remap = remapping as unknown as typeof remapping.default;
   const remapped = remap(
     sourcemaps,
     getSourceMapLoader(babelMaps),
@@ -34,7 +33,7 @@ export function massageSourcemaps(sourcemaps: SourceMapInput | SourceMapInput[],
   return remapped.toString();
 }
 
-function getSourceMapLoader(babelMaps: Map<string, any>): SourceMapLoader {
+function getSourceMapLoader(babelMaps: Map<string, remapping.DecodedSourceMap>): SourceMapLoader {
   const root = process.cwd();
   return (f: string) => {
     if (f.includes('__SOURCE__')) {

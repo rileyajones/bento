@@ -5,7 +5,7 @@
 
 import { spawnSync, SpawnSyncOptions, SpawnSyncReturns } from 'child_process';
 
-const shellCmd = process.platform == 'win32' ? 'cmd' : '/bin/bash';
+export const shellCmd = process.platform == 'win32' ? 'cmd' : '/bin/bash';
 
 /**
  * Spawns the given command in a child process with the given options.

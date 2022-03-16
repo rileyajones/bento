@@ -1,8 +1,7 @@
 import {BUILD_CONSTANTS} from '../compile/build-constants';
 import {getImportResolverPlugin} from './import-resolver';
 import {getReplacePlugin} from './helpers';
-import * as minimist from 'minimist';
-const argv = minimist(process.argv.slice(2));
+import { argv } from '../common/argv';
 
 /**
  * Gets the config for minified babel transforms run, used by 3p vendors.

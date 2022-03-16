@@ -2,19 +2,20 @@ import * as fastGlob from 'fast-glob';
 import { mkdirSync } from 'fs';
 import { basename } from 'path';
 import { outputFile } from 'fs-extra';
-import { endBuildStep, getComponentDir, watchDebounceDelay } from "./helpers";
+import { getComponentDir, watchDebounceDelay } from "./helpers";
 import { watch } from 'chokidar';
 import { debounce } from '../../common/debounce';
 import { getInitializedComponents } from './components-cache';
 import type { BuildOptions, ComponentBundle } from "../types";
 import { jsifyCssAsync } from '../css/jsify-css';
+import { endBuildStep } from '../helpers';
 
 
-async function buildComponentCss(bundle: ComponentBundle<string>, options: BuildOptions) {
+async function buildComponentCss(bundle: ComponentBundle<string>) {
   const { version } = bundle;
   mkdirSync('build/css', { recursive: true });
 
-  const bundles = await fastGlob(`${getComponentDir(bundle)}/*.css`);
+  const bundles = fastGlob.sync(`${getComponentDir(bundle)}/*.css`);
 
   await Promise.all(
     bundles.map(async (filename) => {
@@ -54,6 +55,6 @@ export async function compileCss(options: BuildOptions = {}) {
   const startTime = Date.now();
   // Must be in order because some iterations write while others append.
   const components = getInitializedComponents();
-  await Promise.all(Object.values(components).map((component) => buildComponentCss(component, options)));
+  await Promise.all(Object.values(components).map((component) => buildComponentCss(component)));
   endBuildStep('Recompiled all CSS files into', 'build/', startTime);
 }

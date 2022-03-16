@@ -3,12 +3,11 @@ import { loadOptions, transform } from "@babel/core";
 import * as fastGlob from "fast-glob";
 import { join, parse } from 'path';
 import type { BuildOptions, ComponentBundle, ExtensionBinary } from "../types";
-import * as minimist from 'minimist';
 import { endBuildStep, getComponentDir, maybeToNpmEsmName } from "./helpers";
 import { esbuildCompile } from "./esbuild-compile";
 import { batchedRead, TransformCache } from "../../common/transform-cache";
 import { jssOptions } from "../../babel-config/jss-config";
-const argv = minimist(process.argv.slice(2));
+import { argv } from "../../common/argv";
 
 export function buildNpmBinaries(bundle: ComponentBundle<string>, entryPoint: string, options: BuildOptions) {
   const npm: Record<string, ExtensionBinary> = {

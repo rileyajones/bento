@@ -1,11 +1,6 @@
 import { transformCssString } from "./jsify-css";
 
 /**
- * Lazily instantiate the transformer.
- */
-let syncTransformer: any;
-
-/**
  * Synchronously transforms a css string using postcss.
 
  * @param {string} cssStr the css text to transform

@@ -1,11 +1,10 @@
 import { BuildOptions, ComponentBundle } from "../types";
 import { red } from 'kleur/colors';
 import { getInitializedComponents } from "./components-cache";
-import * as minimist from 'minimist';
 import { log } from "../../common/logging";
 import { endBuildStep } from "./helpers";
 import { buildComponent } from "./build-component";
-const argv = minimist(process.argv.slice(2));
+import { argv } from "../../common/argv";
 
 /**
  * Process the command line arguments --nocomponents, --components, and

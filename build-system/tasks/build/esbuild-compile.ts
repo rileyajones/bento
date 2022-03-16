@@ -6,9 +6,8 @@ import { endBuildStep, maybeToEsmName } from './helpers';
 import { minify } from './minify';
 import { massageSourcemaps } from '../sourcemaps';
 import { getEsbuildPlugins } from './plugins';
-import * as minimist from 'minimist';
 import { getWrapper } from './wrappers';
-const argv = minimist(process.argv.slice(2));
+import { argv } from '../../common/argv';
 
 
 export async function esbuildCompile(srcDir: string, srcFilename: string, destDir: string, options: EsbuildCompileOptions) {
@@ -61,9 +60,9 @@ export async function esbuildCompile(srcDir: string, srcFilename: string, destDi
     if (options.minify) {
       const { code: minified, map: minifiedMap } = await minify(code);
       code = minified;
-      map = await massageSourcemaps([minifiedMap, map], babelMaps, options);
+      map = massageSourcemaps([minifiedMap, map], babelMaps, options);
     } else {
-      map = await massageSourcemaps([map], babelMaps, options);
+      map = massageSourcemaps([map], babelMaps, options);
     }
 
     await Promise.all([
@@ -71,7 +70,7 @@ export async function esbuildCompile(srcDir: string, srcFilename: string, destDi
       outputFile(`${destFile}.map`, map),
     ]);
 
-    await finishBundle(destDir, destFilename, options, startTime);
+    finishBundle(destDir, destFilename, options, startTime);
   }
 }
 
@@ -79,7 +78,7 @@ export async function esbuildCompile(srcDir: string, srcFilename: string, destDi
  * Performs the final steps after a JS file is bundled and optionally minified
  * with esbuild and babel.
  */
-async function finishBundle(destDir: string, destFilename: string, options: EsbuildCompileOptions, startTime: number) {
+function finishBundle(destDir: string, destFilename: string, options: EsbuildCompileOptions, startTime: number) {
   const logPrefix = options.minify ? 'Minified' : 'Compiled';
   let { aliasName } = options;
   if (aliasName) {

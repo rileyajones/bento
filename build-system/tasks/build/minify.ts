@@ -1,6 +1,5 @@
 import * as terser from 'terser';
-import * as minimist from 'minimist';
-const argv = minimist(process.argv.slice(2));
+import { argv } from '../../common/argv';
 
 /**
  * Name cache to help terser perform cross-binary property mangling.

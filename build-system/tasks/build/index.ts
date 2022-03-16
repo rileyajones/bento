@@ -2,11 +2,10 @@ import { JS_BUNDLES } from "../../compile/bundles.config";
 import type { BuildOptions } from "../types";
 import { buildBundle } from "./build-bundle";
 import { compileCss } from "./build-css";
-import * as minimist from 'minimist';
 import { buildComponents } from "./build-components";
 import { generateRuntimeEntrypoint } from "./generate";
 import { patchPreact } from "../../common/update-packages";
-const argv = minimist(process.argv.slice(2));
+import { argv } from "../../common/argv";
 
 async function buildCoreRuntime(options: BuildOptions) {
   patchPreact();
@@ -15,7 +14,7 @@ async function buildCoreRuntime(options: BuildOptions) {
   return buildBundle(bundle, options);
 }
 
-export async function build() {
+export async function build(): Promise<void> {
   process.env.NODE_ENV = 'development';
   const options: BuildOptions = {
     fortesting: argv.fortesting,
@@ -32,6 +31,6 @@ export async function build() {
   await buildComponents(options);
 }
 
-if (require.main === module) {
-  build();
-}
+build().catch((e) => {
+  throw  e;
+});

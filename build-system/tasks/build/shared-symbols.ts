@@ -9,7 +9,6 @@
  */
 
 import {
-  Declaration,
   isExportAllDeclaration, isExportDefaultDeclaration,
   isExportNamedDeclaration, isTypeScript,
   isExportDefaultSpecifier,

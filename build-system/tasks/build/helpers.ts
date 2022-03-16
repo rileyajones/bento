@@ -1,8 +1,7 @@
-import * as minimist from 'minimist';
-import { cyan, green, red } from 'kleur/colors';
+import { cyan, red } from 'kleur/colors';
 import { log } from '../../common/logging';
+import { argv } from '../../common/argv';
 import { ComponentBundle } from '../types';
-const argv = minimist(process.argv.slice(2));
 
 /**
  * Used to debounce file edits during watch to prevent races.
@@ -30,28 +29,6 @@ export function getComponentDir({ name, version }: ComponentBundle<string>) {
   return `src/components/${name}/${version}`;
 }
 
-/**
- * Stops the timer for the given build step and prints the execution time.
- * @param {string} stepName Name of the action, like 'Compiled' or 'Minified'
- * @param {string} targetName Name of the target, like a filename or path
- * @param {DOMHighResTimeStamp} startTime Start time of build step
- */
-export function endBuildStep(stepName: string, targetName: string, startTime: DOMHighResTimeStamp) {
-  const endTime = Date.now();
-  const executionTime = new Date(endTime - startTime);
-  const mins = executionTime.getMinutes();
-  const secs = executionTime.getSeconds();
-  const ms = ('000' + executionTime.getMilliseconds().toString()).slice(-3);
-  let timeString = '(';
-  if (mins > 0) {
-    timeString += mins + ' m ' + secs + '.' + ms + ' s)';
-  } else if (secs === 0) {
-    timeString += ms + ' ms)';
-  } else {
-    timeString += secs + '.' + ms + ' s)';
-  }
-  log(stepName, cyan(targetName), green(timeString));
-}
 
 /**
  * Handles a bundling error
@@ -60,7 +37,7 @@ export function handleBundleError(err: Error, continueOnError: boolean, destFile
   let message = err.toString();
   if (err.stack) {
     // Drop the node_modules call stack, which begins with '    at'.
-    message = err.stack.replace(/    at[^]*/, '').trim();
+    message = err.stack.replace(/ {4}at[^]*/, '').trim();
   }
   log(red('ERROR:'), message, '\n');
   const reasonMessage = `Could not compile ${cyan(destFilename)}`;

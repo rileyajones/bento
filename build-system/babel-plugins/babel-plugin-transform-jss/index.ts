@@ -35,7 +35,7 @@ import * as preset from 'jss-preset-default';
 import { join, relative } from 'path';
 import { transformCssString } from '../../tasks/css/jsify-css';
 import type { NodePath, PluginObj } from '@babel/core';
-import type { CallExpression, Identifier, ImportDeclaration, MemberExpression, ObjectMethod, ObjectProperty, Program, SpreadElement, VariableDeclaration } from '@babel/types';
+import type { CallExpression, Identifier, ImportDeclaration, MemberExpression, ObjectProperty, Program, SpreadElement, VariableDeclaration } from '@babel/types';
 const { addNamed } = require('@babel/helper-module-imports');
 
 module.exports = function ({ template, types: t }: any): PluginObj {

@@ -6,10 +6,8 @@ import type { BuildOptions, ComponentBuildOptions, ComponentBundle, EsbuildCompi
 import { buildBinaries, buildNpmBinaries, buildNpmCss } from "./build-binaries";
 import { generateEntrypointSource } from "./generate";
 import { getComponentDir, watchDebounceDelay, watchedEntryPoints } from "./helpers";
-import * as minimist from 'minimist';
 import { esbuildCompile } from "./esbuild-compile";
 import { getDependencies } from "./plugins";
-const argv = minimist(process.argv.slice(2));
 
 export async function buildComponent(bundle: ComponentBundle<string>, options: ComponentBuildOptions) {
   if (options.watch) {
@@ -26,16 +24,18 @@ export async function buildComponent(bundle: ComponentBundle<string>, options: C
     promises.push(buildBinaries(componentDir, options.binaries, options));
   }
   if (options.isRebuild) {
-    return Promise.all(promises);
+    await Promise.all(promises);
+    return;
   }
 
-  // promises.push(
-  //   buildComponentJs(bundle, buildFilename, {
-  //     ...options,
-  //     wrapper: 'none',
-  //   })
-  // );
-  return Promise.all(promises);
+  promises.push(
+    buildComponentJs(bundle, buildFilename, {
+      ...options,
+      wrapper: 'none',
+    })
+  );
+  await Promise.all(promises);
+  return;
 }
 
 /**
@@ -46,7 +46,7 @@ export async function buildComponent(bundle: ComponentBundle<string>, options: C
  * @param {!Object} options
  * @return {!Promise}
  */
- async function buildComponentJs(bundle: ComponentBundle<string>, filename: string, options: BuildOptions): Promise<void> {
+ export async function buildComponentJs(bundle: ComponentBundle<string>, filename: string, options: BuildOptions): Promise<void> {
    const {name, version} = bundle;
   const componentDir = getComponentDir(bundle);
 
