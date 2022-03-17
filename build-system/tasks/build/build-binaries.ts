@@ -1,13 +1,14 @@
 import { mkdirSync, writeFile } from "fs-extra";
 import { loadOptions, transform } from "@babel/core";
-import * as fastGlob from "fast-glob";
+import fastGlob = require("fast-glob");
 import { join, parse } from 'path';
 import type { BuildOptions, ComponentBundle, ExtensionBinary } from "../types";
-import { endBuildStep, getComponentDir, maybeToNpmEsmName } from "./helpers";
+import { getComponentDir, maybeToNpmEsmName } from "./helpers";
 import { esbuildCompile } from "./esbuild-compile";
 import { batchedRead, TransformCache } from "../../common/transform-cache";
 import { jssOptions } from "../../babel-config/jss-config";
 import { argv } from "../../common/argv";
+import { endBuildStep } from "../helpers";
 
 export function buildNpmBinaries(bundle: ComponentBundle<string>, entryPoint: string, options: BuildOptions) {
   const npm: Record<string, ExtensionBinary> = {
@@ -40,7 +41,7 @@ export function buildNpmBinaries(bundle: ComponentBundle<string>, entryPoint: st
   return buildBinaries(getComponentDir(bundle), binaries, options);
 }
 
-export async function buildNpmCss(bundle: ComponentBundle<string>, options: BuildOptions) {
+export async function buildNpmCss(bundle: ComponentBundle<string>) {
   const componentDir = getComponentDir(bundle)
   const startCssTime = Date.now();
   const filenames = await fastGlob(join(componentDir, '**', '*.jss.js'));
@@ -71,13 +72,13 @@ async function getCssForJssFile(jssFile: string): Promise<string> {
     return fileCss;
   }
 
-  const babelOptions: any = loadOptions({ caller: { name: 'jss' } });
+  const babelOptions = loadOptions({ caller: { name: 'jss' } });
   if (!babelOptions) {
     throw new Error('Could not find babel config for jss');
   }
   babelOptions['filename'] = jssFile;
 
-  await transform(contents, babelOptions);
+  transform(contents, babelOptions);
   jssCache.set(hash, Promise.resolve(jssOptions.css));
   return jssOptions.css;
 }

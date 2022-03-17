@@ -2,9 +2,9 @@ import { BuildOptions, ComponentBundle } from "../types";
 import { red } from 'kleur/colors';
 import { getInitializedComponents } from "./components-cache";
 import { log } from "../../common/logging";
-import { endBuildStep } from "./helpers";
 import { buildComponent } from "./build-component";
 import { argv } from "../../common/argv";
+import { endBuildStep } from "../helpers";
 
 /**
  * Process the command line arguments --nocomponents, --components, and

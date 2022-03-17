@@ -1,7 +1,8 @@
-import * as minimist from 'minimist';
+import minimist = require('minimist');
 import { gitCherryMain, gitCommitFormattedTime } from '../common/git';
 
 // Allow leading zeros in --version_override, e.g. 0000000000001
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 const argv = minimist(process.argv.slice(2), {
   string: ['version_override'],
 });
@@ -62,7 +63,9 @@ const argv = minimist(process.argv.slice(2), {
  * @return {string} AMP version number (always 13 digits long)
  */
 export function getVersion(ref = 'HEAD'): string {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   if (argv.version_override) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     const version = String(argv.version_override);
     if (!/^\d{13}$/.test(version)) {
       throw new Error('--version_override only accepts a 13-digit version');

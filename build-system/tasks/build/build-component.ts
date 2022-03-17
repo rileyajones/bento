@@ -9,7 +9,7 @@ import { getComponentDir, watchDebounceDelay, watchedEntryPoints } from "./helpe
 import { esbuildCompile } from "./esbuild-compile";
 import { getDependencies } from "./plugins";
 
-export async function buildComponent(bundle: ComponentBundle<string>, options: ComponentBuildOptions) {
+export async function buildComponent(bundle: ComponentBundle<string>, options: ComponentBuildOptions): Promise<void> {
   if (options.watch) {
     await watchComponent(bundle, options);
   }
@@ -19,7 +19,7 @@ export async function buildComponent(bundle: ComponentBundle<string>, options: C
 
   const componentDir = getComponentDir(bundle);
   promises.push(buildNpmBinaries(bundle, buildFilename, options));
-  promises.push(buildNpmCss(bundle, options));
+  promises.push(buildNpmCss(bundle));
   if (options.binaries) {
     promises.push(buildBinaries(componentDir, options.binaries, options));
   }

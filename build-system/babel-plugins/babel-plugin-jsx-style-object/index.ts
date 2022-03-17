@@ -9,7 +9,7 @@
  */
 
 import { Node, NodePath, PluginObj } from '@babel/core';
-import { ImportDeclaration, JSXAttribute, ObjectMethod, ObjectProperty } from '@babel/types';
+import { ImportDeclaration, JSXAttribute, ObjectProperty } from '@babel/types';
 const { addNamed } = require('@babel/helper-module-imports');
 
 const baseModule = 'core/dom/jsx';
@@ -103,7 +103,7 @@ export default function (babel: any): PluginObj {
   }
 
   function mergeBinaryConcat(props: Array<Node | null>): Node {
-    let expr = null;
+    let expr: Node | null = null;
     while (props.length) {
       const part = props.shift();
       if (part) {
@@ -114,7 +114,7 @@ export default function (babel: any): PluginObj {
         }
       }
     }
-    return expr;
+    return expr as Node;
   }
 
   function replaceExpression(path: NodePath<Node | JSXAttribute>) {

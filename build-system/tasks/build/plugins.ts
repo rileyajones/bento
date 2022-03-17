@@ -1,14 +1,15 @@
-import {posix} from "path";
+import { posix } from "path";
+import type { DecodedSourceMap } from '@ampproject/remapping';
 import { getEsbuildBabelPlugin } from "../../common/esbuild-babel";
 import { build, Plugin } from 'esbuild';
 import type { BuildOptions, EsbuildCompileOptions } from "../types";
 
 export function getEsbuildPlugins(options: EsbuildCompileOptions): {
   plugins: Plugin[];
-  babelMaps: Map<string, unknown>;
+  babelMaps: Map<string, DecodedSourceMap>;
 } {
   const babelCaller = options.babelCaller ?? (options.minify ? 'minified' : 'unminified');
-  const babelMaps = new Map<string, unknown>();
+  const babelMaps = new Map<string, DecodedSourceMap>();
   const babelPlugin = getEsbuildBabelPlugin(
     babelCaller,
     /* enableCache */ true,
@@ -29,7 +30,7 @@ export function getEsbuildPlugins(options: EsbuildCompileOptions): {
  * generate a metafile for it. Uses the set of babel plugins that would've been
  * used to compile the entrypoint.
  */
- export async function getDependencies(entryPoint: string, options: BuildOptions): Promise<string[]> {
+export async function getDependencies(entryPoint: string, options: BuildOptions): Promise<string[]> {
   const caller = options.minify ? 'minified' : 'unminified';
   const babelPlugin = getEsbuildBabelPlugin(caller, /* enableCache */ true);
   const result = await build({

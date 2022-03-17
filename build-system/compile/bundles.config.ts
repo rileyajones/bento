@@ -4,7 +4,7 @@ import { log } from '../common/logging';
 
 // Reexporting to assert the type.
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-export const componentBundles = require('./bundles.config.components.json') as unknown as ComponentBundle[];
+export const componentBundles = require('./bundles.config.components') as unknown as ComponentBundle[];
 
 export const JS_BUNDLES = Object.freeze({
   'bento.js': {

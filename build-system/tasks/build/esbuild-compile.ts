@@ -2,19 +2,21 @@ import * as esbuild from 'esbuild';
 import { outputFile, copySync } from 'fs-extra';
 import { dirname, join } from 'path';
 import { EsbuildCompileOptions } from '../types';
-import { endBuildStep, maybeToEsmName } from './helpers';
+import { maybeToEsmName } from './helpers';
 import { minify } from './minify';
 import { massageSourcemaps } from '../sourcemaps';
 import { getEsbuildPlugins } from './plugins';
 import { getWrapper } from './wrappers';
 import { argv } from '../../common/argv';
+import { endBuildStep } from '../helpers';
+import { SourceMapInput } from '@ampproject/remapping';
 
 
 export async function esbuildCompile(srcDir: string, srcFilename: string, destDir: string, options: EsbuildCompileOptions) {
   const startTime = Date.now();
   const entryPoint = join(srcDir, srcFilename);
   const filename = options.minify
-    ? options.minifiedName
+    ? options.minifiedName as string
     : options.toName ?? srcFilename;
   const destFilename = maybeToEsmName(filename);
   const destFile = join(destDir, filename);
@@ -50,17 +52,17 @@ export async function esbuildCompile(srcDir: string, srcFilename: string, destDi
         mainFields: ['module', 'browser', 'main'],
         write: false,
       });
-    } else {
-      result = await result.rebuild!();
+    } else if (result.rebuild) {
+      result = await result.rebuild();
     }
     const outputFiles = result.outputFiles ?? [];
-    let code = outputFiles.find(({ path }) => !path.endsWith('.map'))!.text;
-    let map = outputFiles.find(({ path }) => path.endsWith('.map'))!.text;
+    let code = (outputFiles.find(({ path }) => !path.endsWith('.map'))?.text) as string;
+    let map = (outputFiles.find(({ path }) => path.endsWith('.map'))?.text) as string;
 
     if (options.minify) {
       const { code: minified, map: minifiedMap } = await minify(code);
       code = minified;
-      map = massageSourcemaps([minifiedMap, map], babelMaps, options);
+      map = massageSourcemaps([minifiedMap as SourceMapInput, map], babelMaps, options);
     } else {
       map = massageSourcemaps([map], babelMaps, options);
     }
@@ -94,7 +96,7 @@ function finishBundle(destDir: string, destFilename: string, options: EsbuildCom
   } else {
     const loggingName =
       !destFilename.startsWith('amp-')
-        ? `${options.name} → ${destFilename}`
+        ? `${options?.name || 'undefined'} → ${destFilename}`
         : destFilename;
     endBuildStep(logPrefix, loggingName, startTime);
   }

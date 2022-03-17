@@ -1,5 +1,5 @@
 import { relative } from 'path';
-import { loadOptions, transformAsync } from '@babel/core';
+import { loadOptions, PluginItem, transformAsync } from '@babel/core';
 import { TransformCache, batchedRead, md5 } from './transform-cache';
 import type { BabelFileResult, TransformOptions } from '@babel/core';
 import type { Plugin } from 'esbuild';
@@ -58,7 +58,7 @@ export function getEsbuildBabelPlugin(
   return {
     name: 'babel',
 
-    async setup(build) {
+    setup(build) {
       preSetup();
 
       build.onLoad(
@@ -108,7 +108,8 @@ function getFileBabelOptions(babelOptions: TransformOptions, filename: string): 
   // and must be disabled individually.
   if (filename.includes('node_modules')) {
     const plugins = babelOptions.plugins?.filter(
-      ({ key }: any) => !CJS_TRANSFORMS.has(key)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      ({ key }) => !CJS_TRANSFORMS.has(key)
     );
     babelOptions = { ...babelOptions, plugins };
   }

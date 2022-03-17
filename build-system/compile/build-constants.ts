@@ -1,6 +1,5 @@
+import { argv } from '../common/argv';
 import {VERSION} from './internal-version';
-import * as minimist from "minimist";
-const argv = minimist(process.argv.slice(2));
 
 // TODO(rileyajones): Review this.
 const testTasks = [

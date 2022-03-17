@@ -26,7 +26,7 @@ async function unit() {
 
   await runner.setup();
   await runner.run();
-  await runner.teardown();
+  runner.teardown();
 }
 
 unit.description = 'Run unit tests';

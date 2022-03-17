@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {readdirSync} from 'fs';
 
 /**
@@ -7,7 +8,6 @@ import {readdirSync} from 'fs';
  * @return {!Object}
  */
 function getAllBabelConfigs() {
-  const files = readdirSync(__dirname);
   const babelConfigFiles = readdirSync(__dirname)
     .filter((file) => file.includes('-config.ts'));
   const babelConfigs = babelConfigFiles.map((file) => require(`./${file}`));

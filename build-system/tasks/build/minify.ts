@@ -1,3 +1,4 @@
+import type { RawSourceMap } from 'source-map';
 import * as terser from 'terser';
 import { argv } from '../../common/argv';
 
@@ -9,7 +10,7 @@ import { argv } from '../../common/argv';
 /**
  * Minify the code with Terser. Only used by the ESBuild.
  */
- export async function minify(code: string): Promise<{code: string, map: any, error?: Error}> {
+ export async function minify(code: string): Promise<{code: string, map?: string | RawSourceMap, error?: Error}> {
   const terserOptions: terser.MinifyOptions = {
     mangle: {
       properties: {
@@ -34,6 +35,7 @@ import { argv } from '../../common/argv';
 
   // Remove the local variable name cache which should not be reused between binaries.
   // See https://github.com/ampproject/amphtml/issues/36476
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   (nameCache as any).vars = undefined;
 
   const minified = await terser.minify(code, terserOptions);

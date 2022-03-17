@@ -1,7 +1,7 @@
-import * as dedent from 'dedent';
+import dedent from 'dedent';
 import { posix } from 'path';
 import { outputFile } from 'fs-extra';
-import { BuildOptions, ComponentBundle, JsBundle } from '../types';
+import { ComponentBundle, JsBundle } from '../types';
 import { getSharedSymbols } from './shared-symbols';
 
 function getRuntimeEntrypointSource() {
@@ -43,13 +43,13 @@ function getRuntimeEntrypointSource() {
 `);
 }
 
-export function generateRuntimeEntrypoint(bundle: JsBundle, options: BuildOptions) {
+export function generateRuntimeEntrypoint(bundle: JsBundle) {
   const { srcDir, srcFilename } = bundle;
   const filename = `${srcDir}/${srcFilename}`;
   return outputFile(filename, getRuntimeEntrypointSource());
 }
 
-export function generateEntrypointSource({name}: ComponentBundle<string>, outputFilename: string) {
+export function generateEntrypointSource({name}: ComponentBundle<string>, outputFilename: string): string {
   const bentoCePath = posix.relative(
     posix.dirname(outputFilename),
     'src/preact/bento-ce'

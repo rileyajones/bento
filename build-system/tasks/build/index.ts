@@ -10,7 +10,7 @@ import { argv } from "../../common/argv";
 async function buildCoreRuntime(options: BuildOptions) {
   patchPreact();
   const bundle = JS_BUNDLES['bento.js'];
-  await generateRuntimeEntrypoint(bundle, options);
+  await generateRuntimeEntrypoint(bundle);
   return buildBundle(bundle, options);
 }
 

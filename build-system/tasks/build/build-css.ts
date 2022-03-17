@@ -48,6 +48,7 @@ export async function compileCss(options: BuildOptions = {}) {
   if (options.watch) {
     watch('css/**/*.css').on(
       'change',
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       debounce(compileCss, watchDebounceDelay)
     );
   }

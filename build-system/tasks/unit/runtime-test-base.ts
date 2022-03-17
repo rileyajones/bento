@@ -274,7 +274,7 @@ export class RuntimeTestConfig {
   updateMiddleware() {
     const createDevServerMiddleware = function () {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-      return require(require.resolve('../../server/app.js'));
+      return require(require.resolve('../../server/app.ts'));
     };
     this.plugins.push({
       'middleware:devServer': ['factory', createDevServerMiddleware],
@@ -329,6 +329,7 @@ export class RuntimeTestRunner {
    */
   async run() {
     // TODO(rileyajones) This type genuinly seems wrong... is there an issue here?
+    console.log(JSON.stringify(argv), process.argv)
     this.exitCode = await createKarmaServer(this.config as unknown as Config);
   }
 

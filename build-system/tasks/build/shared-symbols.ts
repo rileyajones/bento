@@ -104,11 +104,11 @@ export function getSharedSymbols(): Record<string, string[]> {
         const symbols = getExportedSymbols(source);
         return [`#${pkg}`, symbols];
       } catch (e) {
-        e.message = `${filepath}: ${e.message}`;
+        (e as Error).message = `${filepath}: ${(e as Error).message}`;
         throw e;
       }
     });
-    sharedBentoSymbols = Object.fromEntries(entries);
+    sharedBentoSymbols = Object.fromEntries(entries) as Record<string, string[]>;
   }
-  return sharedBentoSymbols!;
+  return sharedBentoSymbols;
 }

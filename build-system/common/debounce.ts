@@ -1,4 +1,4 @@
-const lodashDebounce = require('lodash.debounce'); // This module cannot be imported using `import`
+import lodashDebounce = require('lodash.debounce'); // This module cannot be imported using `import`
 
 type DebouncableFunction<S, T> = (...args: S[]) => T;
 
@@ -8,6 +8,6 @@ type DebouncableFunction<S, T> = (...args: S[]) => T;
  *
  * Notably, invokes the function both the leading and trailing edges of the event.
  */
-export function debounce<S, T>(func: DebouncableFunction<S, T>, wait: number): DebouncableFunction<S, T> {
+export function debounce<S, T>(func: DebouncableFunction<S, T>, wait: number) {
   return lodashDebounce(func, wait, {leading: true, trailing: true});
 }

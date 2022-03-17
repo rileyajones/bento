@@ -1,5 +1,4 @@
-// @ts-ignore
-import * as cssImports from 'css-imports';
+import cssImports from 'css-imports';
 import { red } from 'kleur/colors';
 import * as fs from 'fs-extra';
 import * as postcss from 'postcss';
@@ -8,6 +7,7 @@ import cssnano = require('cssnano');
 import { batchedRead, md5, TransformCache } from '../../common/transform-cache';
 import { log } from '../../common/logging';
 import { dirname, join } from 'path';
+import type {AcceptedPlugin} from 'postcss';
 
 // NOTE: see https://github.com/ai/browserslist#queries for `browsers` list
 const browsersList = {
@@ -61,7 +61,7 @@ let transformCache: TransformCache<CssTransformResult>;
 async function getCssImports(cssFile: string): Promise<string[]> {
   const contents = await fs.readFile(cssFile);
   const topLevelImports: string[] = cssImports(contents)
-    .map((result: any) => result.path)
+    .map((result) => result.path)
     .filter((importedFile: string) => !importedFile.startsWith('http'))
     .map((importedFile: string) => join(dirname(cssFile), importedFile));
   if (topLevelImports.length == 0) {
@@ -142,10 +142,10 @@ async function transform(contents: string, opt_filename?: string): Promise<CssTr
     preset: ['default', cssNanoDefaultOptions],
   });
   const autoprefixer = await import('autoprefixer'); // Lazy-imported to speed up task loading.
-  const cssprefixer = (autoprefixer as any)(browsersList);
-  const transformers = [postcssImport, cssprefixer, cssnanoTransformer];
+  const cssprefixer = (autoprefixer as unknown as typeof autoprefixer.default)(browsersList);
+  const transformers: AcceptedPlugin[] = [postcssImport as unknown as AcceptedPlugin, cssprefixer, cssnanoTransformer];
   return postcss
-    .default(transformers) // @ts-ignore
+    .default(transformers)
     .process(contents, { 'from': opt_filename })
     .then((result) => ({
       css: result.css,
